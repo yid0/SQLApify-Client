@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqlapify-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sqlapify-client
+  template:
+    metadata:
+      labels:
+        app: sqlapify-client
+    spec:
+      containers:
+      - name: sqlapify-client
+        image: yidoughi/sqlapify-client:latest
+        command: ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8001"]
+        env:
+          - name: SQLAPIFY_CLIENT_ENV
+            value: "prod"
+        ports:
+          - containerPort: 8001
