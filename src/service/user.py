@@ -1,21 +1,14 @@
-from src.config import BodySettings
+from  ..config import BodySettings
 from .handler import Handler
 from .base_service import BaseService    
     
 class UserService(BaseService):
     
-    def __init__(self, body: BodySettings, path = "/users"):
+    def __init__(self, body: BodySettings, path = "/user"):
         self.path=path
-        super().__init__(self.path)
         self.body = body
+        super().__init__(self.path)
         
     async def handle_request(self):
         handler = Handler(method="post", url= self.url, path=self.path, body= self.body)       
-        print(handler)
-        return await handler.handle()      
-
-    
-    def __str__(self):
-        return str(f"{self.body}")
-
-            
+        return await handler.handle()            

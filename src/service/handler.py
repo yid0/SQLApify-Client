@@ -15,8 +15,6 @@ class Handler:
             headers = {
                 "caller": str(getenv("APP_SECRET", "app_secret"))
             }
-            req : Request = client.build_request(method= self.method, url= (self.url + self.path), headers =headers)
-            print("REQUEST :", req)
-            response: Response = await client.send(req)
-            print(response.__dict__)
+            req: Request = client.build_request(method=self.method, url=(self.url + self.path), headers=headers, json=self.body) 
+            response: Response = await client.send(request=req, stream=False)
         return response.json()

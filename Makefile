@@ -4,6 +4,14 @@ ALPINE_VERSION ?=3.20
 OPTIONS ?=
 TAG ?=${SQLAPIFY_CLIENT_VERSION}-alpine${ALPINE_VERSION}
 
+.PHONY:	install-dev
+install-dev:
+	pip install -r requirement/requirements.txt
+
+.PHONY:	install-test
+install-test:
+	pip install -r requirement/requirement.test.txt
+
 .PHONY:	build
 build:
 	docker buildx build -t yidoughi/${IMAGE_NAME}:${TAG} . --progress=plain ${OPTIONS}

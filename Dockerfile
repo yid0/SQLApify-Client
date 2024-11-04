@@ -13,15 +13,15 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 WORKDIR ${VIRTUAL_ENV}
 
-COPY --chown=1001:1001 requirements.txt ${VIRTUAL_ENV}
+COPY --chown=1001:1001 requirement/requirements.txt ${VIRTUAL_ENV}/requirement/requirements.txt 
 
-RUN mkdir ${VIRTUAL_ENV}/src && pip --no-cache-dir install -r requirements.txt
+RUN mkdir ${VIRTUAL_ENV}/src && pip --no-cache-dir install -r requirement/requirements.txt
 
 COPY --chown=1001:1001 env ${VIRTUAL_ENV}/env
 
-COPY --chown=1001:1001  src ${VIRTUAL_ENV}/src
+COPY --chown=1001:1001 src ${VIRTUAL_ENV}/src
 
-RUN rm requirements.txt
+RUN rm requirement/requirements.txt
 
 
 FROM yidoughi/fastpine:latest
@@ -29,9 +29,10 @@ FROM yidoughi/fastpine:latest
 ARG WORKDIR_APP=/app
 ARG VIRTUAL_ENV=${WORKDIR_APP}/venv
 
-ENV HOME=${VIRTUAL_ENV}
 
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+ENV PATH="$VIRTUAL_ENV/bin:$PATH" \
+    HOME=${VIRTUAL_ENV}
+
 ENV SQLAPIFY_CLIENT_ENV="dev" \
     SQLAPIFY_ENDPOINT="http://localhost:8000 "\
     SQLAPIFY_CLIENT_APP_SECRET="app_secret" \
@@ -42,8 +43,6 @@ ENV SQLAPIFY_CLIENT_ENV="dev" \
     APP_DB_PASSWORD="app_password"
 
 WORKDIR ${HOME}
-
-RUN ls -la /usr/lib
 
 COPY --from=builder --chown=1001 ${VIRTUAL_ENV} ${VIRTUAL_ENV} 
 COPY --chown=1001 --chmod=755 scripts/start.sh ${VIRTUAL_ENV}/bin/start.sh

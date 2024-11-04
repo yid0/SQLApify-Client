@@ -5,7 +5,6 @@ class BaseService(ABC):
     url: str
     def __init__(self, path):
         from os import getenv
-        print(getenv("SQLAPIFY_ENDPOINT"))
         self.url = str(getenv("SQLAPIFY_ENDPOINT"))
         self.path = path
         
