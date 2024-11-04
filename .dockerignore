@@ -1,0 +1,6 @@
+.gitignore
+Makefile
+.coverage
+.**_cache
+htmlcov/
+deploy/

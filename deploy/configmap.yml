@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sqlapify-client-config
+  labels:
+    app: sqlapify-client
+data:
+  SQLAPIFY_CLIENT_ENV: 'dev'
+  SQLAPIFY_ENDPOINT: 'http://sqlapify:8000'
+  SQLAPIFY_CLIENT_APP_SECRET: 'app_secret'
+  SQLAPIFY_CLIENT_HOST: 'localhsot'
+  SQLAPIFY_CLIENT_PORT: '8001'
+  APP_DB_NAME: 'app_db'
+  APP_DB_USER: 'app_username'

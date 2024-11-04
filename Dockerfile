@@ -15,11 +15,14 @@ WORKDIR ${VIRTUAL_ENV}
 
 COPY --chown=1001:1001 requirement/requirements.txt ${VIRTUAL_ENV}/requirement/requirements.txt 
 
+
 RUN mkdir ${VIRTUAL_ENV}/src && pip --no-cache-dir install -r requirement/requirements.txt
 
 COPY --chown=1001:1001 env ${VIRTUAL_ENV}/env
 
 COPY --chown=1001:1001 src ${VIRTUAL_ENV}/src
+
+COPY --chown=1001 --chmod=755 scripts/start.sh ${VIRTUAL_ENV}/bin/start.sh
 
 RUN rm requirement/requirements.txt
 
@@ -30,11 +33,10 @@ ARG WORKDIR_APP=/app
 ARG VIRTUAL_ENV=${WORKDIR_APP}/venv
 
 
-ENV PATH="$VIRTUAL_ENV/bin:$PATH" \
-    HOME=${VIRTUAL_ENV}
+ENV HOME=${VIRTUAL_ENV}
 
 ENV SQLAPIFY_CLIENT_ENV="dev" \
-    SQLAPIFY_ENDPOINT="http://localhost:8000 "\
+    SQLAPIFY_ENDPOINT="http://sqlapify:8000 "\
     SQLAPIFY_CLIENT_APP_SECRET="app_secret" \
     SQLAPIFY_CLIENT_HOST="0.0.0.0" \
     SQLAPIFY_CLIENT_PORT="8001" \
@@ -45,8 +47,14 @@ ENV SQLAPIFY_CLIENT_ENV="dev" \
 WORKDIR ${HOME}
 
 COPY --from=builder --chown=1001 ${VIRTUAL_ENV} ${VIRTUAL_ENV} 
-COPY --chown=1001 --chmod=755 scripts/start.sh ${VIRTUAL_ENV}/bin/start.sh
 
-RUN rm -rf /var/cache/apk/* /tmp/* && fastapi --help
+RUN rm -rf /usr/lib/python**/__pycache__** && \
+    find ${VIRTUAL_ENV} -type d -name "tests" -exec rm -rf {} + && \
+    find /usr/lib/ -type d -name "tests" -exec rm -rf {} + && \
+    find /usr/lib/ -type d -name "docs" -exec rm -rf {} + && \
+    find ${VIRTUAL_ENV} -type d -name "__pycache__" -exec rm -rf {} + && \
+    rm -rf /var/cache/apk/* /tmp/* /**/.cache/pip
 
-CMD ["tail", "-f", "/dev/null"]
+USER 1001
+CMD ["start.sh"]
+# CMD ["tail", "-f", "/dev/null"]

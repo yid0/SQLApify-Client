@@ -15,9 +15,14 @@ spec:
       containers:
       - name: sqlapify-client
         image: yidoughi/sqlapify-client:latest
-        command: ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8001"]
-        env:
-          - name: SQLAPIFY_CLIENT_ENV
-            value: "prod"
+        securityContext:
+          runAsUser: 1001
+          runAsGroup: 1001 
+        command: ["start.sh"]
+        envFrom:
+          - configMapRef:
+              name: sqlapify-client-config
+          - secretRef:
+              name: sqlapify-client-secrets
         ports:
           - containerPort: 8001
